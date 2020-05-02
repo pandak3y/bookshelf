@@ -1,0 +1,16 @@
+<html>
+    <head>
+    </head>
+    <body>
+        <div>
+            {% for book in books %}
+                <div class="book-card">
+                    <img src="http://covers.openlibrary.org/b/isbn/{{ book.isbn }}-L.jpg" />
+                    <h3>{{ book.title }}</h3>
+                    <h4>{{ book.author }}</h4>
+                    <p>Date finished: {{ book.date_finished }}</p>
+                </div>
+            {% endfor %}
+        </div>
+    </body>
+</html>

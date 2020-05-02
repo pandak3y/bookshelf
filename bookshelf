@@ -3,12 +3,21 @@
 import csv
 import os
 
+from jinja2 import Environment, FileSystemLoader
+
+
 def get_books(path):
     if not os.path.exists(path):
         return
     f = open(path)
     reader = csv.DictReader(f)
     return list(reader)
+
+
+def render(values):
+    env = Environment(loader=FileSystemLoader('themes/default'))
+    template = env.get_template('index.html')
+    return template.render(values)
 
 
 def main():
@@ -18,7 +27,12 @@ def main():
         print("Couldn't get books")
         return
 
-    print(results)
+    values = {
+        'books': results
+    }
+
+    html = render(values)
+    print(html)
 
 
 if __name__ == '__main__':
