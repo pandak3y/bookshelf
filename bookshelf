@@ -2,6 +2,7 @@
 
 import csv
 import os
+from shutil import copyfile
 
 from jinja2 import Environment, FileSystemLoader
 
@@ -20,6 +21,21 @@ def render(values):
     return template.render(values)
 
 
+def ensure_build_directory(path):
+    if os.path.exists(path):
+        return
+    os.mkdir(path)
+
+
+def write_file(path, contents):
+    with open(path, 'w') as f:
+        f.write(contents)
+
+
+def copy_css(path):
+    copyfile('themes/default/style.css', path + '/style.css')
+
+
 def main():
     path = 'books.csv'
     results = get_books(path)
@@ -27,12 +43,14 @@ def main():
         print("Couldn't get books")
         return
 
+    ensure_build_directory('build')
     values = {
         'books': results
     }
 
     html = render(values)
-    print(html)
+    write_file('build/index.html', html)
+    copy_css('build')
 
 
 if __name__ == '__main__':
