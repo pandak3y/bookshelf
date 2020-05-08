@@ -17,6 +17,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import csv
+import json
 import os
 from shutil import copyfile
 
@@ -31,8 +32,8 @@ def get_books(path):
     return list(reader)
 
 
-def render(values):
-    env = Environment(loader=FileSystemLoader('themes/default'))
+def render(values, theme):
+    env = Environment(loader=FileSystemLoader(theme))
     template = env.get_template('index.html')
     return template.render(values)
 
@@ -48,26 +49,41 @@ def write_file(path, contents):
         f.write(contents)
 
 
-def copy_css(path):
-    copyfile('themes/default/style.css', path + '/style.css')
+def copy_css(path, theme):
+    copyfile(theme + '/style.css', path + '/style.css')
 
 
-def main():
-    path = 'books.csv'
+def main(config):
+    path = config['books']
     results = get_books(path)
     if not results:
         print("Couldn't get books")
         return
 
-    ensure_build_directory('build')
+    ensure_build_directory(config['build'])
     values = {
         'books': results
     }
 
-    html = render(values)
-    write_file('build/index.html', html)
-    copy_css('build')
+    html = render(values, config['theme'])
+    write_file(config['build'] + '/index.html', html)
+    copy_css(config['build'], config['theme'])
 
 
 if __name__ == '__main__':
-    main()
+    import sys
+
+    if len(sys.argv) == 1:
+        print('missing config file')
+        sys.exit(1)
+
+    config_path = sys.argv[1]
+
+    if not os.path.exists(config_path):
+        print('config file does not exist')
+        sys.exit(1)
+
+    config = open(config_path).read()
+    config = json.loads(config)
+
+    main(config)
