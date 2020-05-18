@@ -29,7 +29,21 @@ def get_books(path):
         return
     f = open(path)
     reader = csv.DictReader(f)
-    return list(reader)
+    books = list(reader)
+
+    for book in books:
+        isbn = book.get('isbn')
+
+        if not isbn:
+            continue
+
+        if len(isbn) < 10:
+            zeros = 10 - len(isbn)
+            zeros = '0' * zeros
+            new_isbn = zeros + isbn
+            book['isbn'] = new_isbn
+
+    return books
 
 
 def render(values, theme):
