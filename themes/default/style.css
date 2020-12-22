@@ -19,7 +19,7 @@ header h1 {
 
 img {
     display: block;
-    max-width: 200px;
+    width: 200px;
 }
 
 .book-card {
