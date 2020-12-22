@@ -77,7 +77,8 @@ def main(config):
 
     ensure_build_directory(config['build'])
     values = {
-        'books': results
+        'books': results,
+        'title': config['title']
     }
 
     html = render(values, config['theme'])
