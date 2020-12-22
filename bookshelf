@@ -43,6 +43,7 @@ def get_books(path):
             new_isbn = zeros + isbn
             book['isbn'] = new_isbn
 
+    books.reverse()
     return books
 
 
